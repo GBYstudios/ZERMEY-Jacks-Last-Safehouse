@@ -7,6 +7,8 @@ class UIManager {
   
   initMainMenu() {
     const html = `
+      <div id="game-canvas-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;"></div>
+      
       <div class="menu-screen active" id="mainMenu">
         <div class="menu-background"></div>
         <div class="menu-content">
@@ -138,7 +140,7 @@ class UIManager {
   
   openControls() {
     audioManager.playSound('button');
-    alert('CONTROLS\n\nWASD / Arrow Keys - Move\nShift - Run\nSpace - Punch\nESC - Pause Menu\nI - Inventory\n\nObjective: Restore all safe zones by clearing every zombie!');
+    alert('CONTROLS\n\nWASD / Arrow Keys - Move\nShift - Run\nSpace - Punch\nESC - Pause Menu\nI - Inventory\nE - Use Item\n\nObjective: Restore all safe zones by clearing every zombie!');
   }
   
   toggleInventory() {
@@ -152,12 +154,10 @@ class UIManager {
     const inventory = window.game.gameState.inventory;
     const grid = document.getElementById('inventoryGrid');
     if (!grid) return;
-    grid.innerHTML = '';
-    for (const [item, count] of Object.entries(inventory)) {
+    grid.innerHTML = '';\n    for (const [item, count] of Object.entries(inventory)) {
       const div = document.createElement('div');
       div.className = 'inventory-item';
-      div.innerHTML = `<div style="font-weight:bold">${item.toUpperCase()}</div><div>×${count}</div>`;
-      grid.appendChild(div);
+      div.innerHTML = `<div style=\"font-weight:bold\">${item.toUpperCase()}</div><div>×${count}</div>`;\n      grid.appendChild(div);
     }
   }
   
@@ -211,21 +211,32 @@ class UIManager {
   }
   
   updateHUD(gameState) {
-    document.getElementById('zombiesDefeated').textContent = gameState.statistics.zombiesDefeated;
+    const zombiesDefeated = document.getElementById('zombiesDefeated');
+    const locationsRestored = document.getElementById('locationsRestored');
+    const survivalTime = document.getElementById('survivalTime');
+    const healthBarFill = document.getElementById('healthBarFill');
+    const healthText = document.getElementById('healthText');
+    
+    if (!zombiesDefeated || !locationsRestored || !survivalTime || !healthBarFill || !healthText) {
+      console.warn('HUD elements not found - game may not be running');
+      return;
+    }
+    
+    zombiesDefeated.textContent = gameState.statistics.zombiesDefeated;
     let restored = 0;
     for (const [name, data] of Object.entries(gameState.locations)) {
       if (data.restored) restored++;
     }
-    document.getElementById('locationsRestored').textContent = `${restored}/4`;
+    locationsRestored.textContent = `${restored}/4`;
     const time = Math.floor(gameState.statistics.timeAlive);
     const mins = Math.floor(time / 60);
     const secs = time % 60;
-    document.getElementById('survivalTime').textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    survivalTime.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     const health = gameState.player.health;
     const maxHealth = CONFIG.PLAYER_MAX_HEALTH;
     const healthPercent = Math.max(0, Math.min(100, (health / maxHealth) * 100));
-    document.getElementById('healthBarFill').style.width = healthPercent + '%';
-    document.getElementById('healthText').textContent = `❤️ ${Math.ceil(health)}/${maxHealth}`;
+    healthBarFill.style.width = healthPercent + '%';
+    healthText.textContent = `❤️ ${Math.ceil(health)}/${maxHealth}`;
   }
   
   formatTime(seconds) {
