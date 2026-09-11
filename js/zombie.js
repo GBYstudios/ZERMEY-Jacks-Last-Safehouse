@@ -17,7 +17,7 @@ class Zombie {
   
   createModel() {
     const group = new THREE.Group();
-    const bodyGeometry = new THREE.CapsuleGeometry(0.3, 0.9, 4, 8);
+    const bodyGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.9, 12);
     const bodyMaterial = new THREE.MeshLambertMaterial({ color: 0x4a7c4e });
     const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
     body.position.y = 0.45;
