@@ -8,10 +8,12 @@ class AudioManager {
     this.musicTracks = {};
     this.currentMusic = null;
     this.ambientOscillators = [];
-    this.initAmbientSounds();
+    this.ambientGain = null;
+    this.ambientStarted = false;
   }
   
   initAmbientSounds() {
+    if (this.ambientStarted) return;
     const gainNode = this.context.createGain();
     gainNode.gain.value = (this.masterVolume * this.musicVolume) * 0.1;
     gainNode.connect(this.context.destination);
@@ -20,11 +22,27 @@ class AudioManager {
     osc.type = 'sine';
     osc.connect(gainNode);
     osc.start();
+    this.ambientGain = gainNode;
     this.ambientOscillators.push(osc);
+    this.ambientStarted = true;
+  }
+  
+  async resume() {
+    try {
+      if (this.context.state !== 'running') {
+        await this.context.resume();
+      }
+      if (!this.ambientStarted) {
+        this.initAmbientSounds();
+      }
+    } catch (e) {
+      console.error('Audio resume error:', e);
+    }
   }
   
   playSound(name, volume = 1) {
     try {
+      if (this.context.state !== 'running') return;
       const osc = this.context.createOscillator();
       const gain = this.context.createGain();
       osc.connect(gain);
@@ -86,6 +104,9 @@ class AudioManager {
     if (type === 'master') this.masterVolume = value;
     if (type === 'music') this.musicVolume = value;
     if (type === 'effects') this.effectsVolume = value;
+    if (this.ambientGain) {
+      this.ambientGain.gain.value = (this.masterVolume * this.musicVolume) * 0.1;
+    }
   }
   
   playFootstep() { this.playSound('punch', 0.2); }
@@ -94,3 +115,4 @@ class AudioManager {
 }
 
 const audioManager = new AudioManager();
+window.audioManager = audioManager;

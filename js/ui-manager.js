@@ -12,12 +12,16 @@ class UIManager {
       <div class="menu-screen active" id="mainMenu">
         <div class="menu-background"></div>
         <div class="menu-content">
+          <div class="menu-panel">
           <h1 class="menu-title">ZERMEY</h1>
           <p class="menu-subtitle">JACK'S LAST SAFEHOUSE</p>
+          <p class="menu-tagline">Restore the town, keep moving, and make it back to the treehouse alive.</p>
           <div class="menu-buttons">
             <button class="menu-btn" id="btnPlay">PLAY</button>
             <button class="menu-btn secondary" id="btnSettings">SETTINGS</button>
             <button class="menu-btn secondary" id="btnControls">CONTROLS</button>
+          </div>
+          <div class="menu-hint">WASD / Arrow Keys to move • Shift to sprint • Space to punch</div>
           </div>
         </div>
       </div>
@@ -79,12 +83,14 @@ class UIManager {
       </div>
       
       <div class="hud" id="hud">
+        <div class="hud-panel">
         <div class="hud-row">
           <div class="hud-item">🧟 ZOMBIES DEFEATED: <span id="zombiesDefeated">0</span></div>
           <div class="hud-item">📍 LOCATIONS RESTORED: <span id="locationsRestored">1/4</span></div>
         </div>
         <div class="hud-row">
           <div class="hud-item">⏱️ SURVIVAL TIME: <span id="survivalTime">00:00</span></div>
+        </div>
         </div>
       </div>
       
@@ -121,7 +127,8 @@ class UIManager {
     document.getElementById('btnMenuVictory')?.addEventListener('click', () => this.mainMenu());
   }
   
-  playGame() {
+  async playGame() {
+    await audioManager.resume();
     audioManager.playSound('button');
     this.currentScreen = 'game';
     document.getElementById('mainMenu').classList.remove('active');
@@ -129,21 +136,25 @@ class UIManager {
   }
   
   openSettings() {
+    audioManager.resume();
     audioManager.playSound('button');
     document.getElementById('settingsScreen').classList.add('active');
   }
   
   closeSettings() {
+    audioManager.resume();
     audioManager.playSound('button');
     document.getElementById('settingsScreen').classList.remove('active');
   }
   
   openControls() {
+    audioManager.resume();
     audioManager.playSound('button');
     alert('CONTROLS\n\nWASD / Arrow Keys - Move\nShift - Run\nSpace - Punch\nESC - Pause Menu\nI - Inventory\nE - Use Item\n\nObjective: Restore all safe zones by clearing every zombie!');
   }
   
   toggleInventory() {
+    audioManager.resume();
     audioManager.playSound('button');
     document.getElementById('inventoryScreen').classList.toggle('active');
     this.updateInventoryDisplay();
@@ -164,6 +175,7 @@ class UIManager {
   }
   
   showDeathScreen(stats) {
+    audioManager.resume();
     audioManager.playSound('death');
     this.currentScreen = 'death';
     document.getElementById('deathScreen').classList.add('active');
@@ -175,6 +187,7 @@ class UIManager {
   }
   
   showVictoryScreen(stats) {
+    audioManager.resume();
     audioManager.playSound('victory');
     this.currentScreen = 'victory';
     document.getElementById('victoryScreen').classList.add('active');
@@ -188,6 +201,7 @@ class UIManager {
   pauseGame() {
     if (this.pausedState) return;
     this.pausedState = true;
+    audioManager.resume();
     audioManager.playSound('button');
     document.getElementById('pauseMenu').classList.add('active');
     window.game?.pause();
@@ -196,18 +210,21 @@ class UIManager {
   resumeGame() {
     if (!this.pausedState) return;
     this.pausedState = false;
+    audioManager.resume();
     audioManager.playSound('button');
     document.getElementById('pauseMenu').classList.remove('active');
     window.game?.resume();
   }
   
   restartGame() {
+    audioManager.resume();
     audioManager.playSound('button');
     saveSystem.reset();
     location.reload();
   }
   
   mainMenu() {
+    audioManager.resume();
     audioManager.playSound('button');
     location.reload();
   }
