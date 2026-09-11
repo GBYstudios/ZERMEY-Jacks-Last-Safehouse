@@ -22,6 +22,7 @@ A complete third-person survival game where you control Jack, a kid surviving a 
 - **Normal Zombies**: Standard slow followers (1 punch to defeat)
 - **Fast Zombies**: Quicker but weaker (1 punch)
 - **Strong Zombies**: Slow but tough (3 punches)
+- **Licensed Zombie Models**: Local Quaternius Zombie Apocalypse Kit glTF enemies with animation fallback to procedural meshes if model loading fails
 
 ### Systems
 - **Inventory System**: Collect food, medkits, batteries, and building materials
@@ -115,6 +116,7 @@ Restore all 3 infected locations (Walmart, McDonald's, Neighborhood) by clearing
 ## 🛠️ Technical Stack
 
 - **Three.js** - 3D Graphics
+- **Three.js GLTFLoader** - Local zombie model loading and animation playback
 - **Cannon-ES** - Physics Engine
 - **Web Audio API** - Sound
 - **LocalStorage** - Save Data

@@ -1,0 +1,17 @@
+Zombie models in this directory are from Quaternius' Zombie Apocalypse Kit (March 2024).
+
+Source:
+- Official pack page: https://quaternius.com/packs/zombieapocalypsekit.html
+- Mirror used to retrieve the checked-in glTF files: https://github.com/Mtjan18/3DGameZombieShooter/tree/3a896406477eb44d235840b4af4e8359e86b04d8/3DAssets/Zombie%20Apocalypse%20Kit%20-%20March%202024/Characters/glTF
+
+Included files:
+- zombie-basic.gltf (from Zombie_Basic.gltf)
+- zombie-chubby.gltf (from Zombie_Chubby.gltf)
+- zombie-arm.gltf (from Zombie_Arm.gltf)
+- zombie-ribcage.gltf (from Zombie_Ribcage.gltf)
+
+License:
+- CC0 1.0 Universal / Public Domain Dedication
+- See QUATERNIUS_LICENSE.txt for the pack license text.
+
+Attribution is not required by CC0, but this file preserves provenance for repository redistribution.

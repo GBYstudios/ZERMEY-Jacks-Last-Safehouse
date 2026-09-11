@@ -1,0 +1,13 @@
+Quaternius Zombie Apocalypse Kit (March 2024)
+
+Creator:
+- Quaternius
+- https://quaternius.com/packs/zombieapocalypsekit.html
+
+License:
+- CC0 1.0 Universal / Public Domain Dedication
+- https://creativecommons.org/publicdomain/zero/1.0/
+
+Repository note:
+- The checked-in zombie glTF files in this directory were copied from the Quaternius Zombie Apocalypse Kit.
+- CC0 allows copying, modifying, and redistributing these assets, including inside a public Git repository.
