@@ -83,7 +83,11 @@ class Game {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFShadowShadowMap;
     
-    const container = document.getElementById('game-container');
+    const container = document.getElementById('game-canvas-container');
+    if (!container) {
+      console.error('game-canvas-container not found!');
+      return;
+    }
     container.appendChild(this.renderer.domElement);
   }
   
