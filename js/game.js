@@ -32,16 +32,13 @@ class Game {
   }
   
   async initialize() {
-    // Load saved game
     const saved = saveSystem.load();
     this.gameState = saved;
     
-    // Initialize Three.js
     this.setupScene();
     this.setupCamera();
     this.setupRenderer();
     
-    // Initialize game systems
     this.worldBuilder = new WorldBuilder(this.scene);
     this.worldBuilder.build();
     
@@ -52,17 +49,13 @@ class Game {
     this.locationManager = new LocationManager(this.scene);
     this.cameraController = new Camera();
     
-    // Sync locations
     for (const [name, data] of Object.entries(this.gameState.locations)) {
       if (data.restored && name !== 'TREEHOUSE') {
         this.locationManager.restoreLocation(name, this.zombieManager);
       }
     }
     
-    // Setup input
     this.setupInput();
-    
-    // Setup event listeners
     window.addEventListener('resize', () => this.onWindowResize());
     
     this.startTime = Date.now();
@@ -110,7 +103,6 @@ class Game {
       case ' ': e.preventDefault(); this.input.punch = true; break;
       case 'escape': this.togglePause(); break;
       case 'i': uiManager.toggleInventory(); break;
-      case 'm': uiManager.openMap(); break;
       case 'e': this.useItem(); break;
     }
   }
@@ -157,7 +149,6 @@ class Game {
     this.isPaused = false;
     this.gameState.statistics.sessionsStarted++;
     
-    // Spawn zombies in all non-restored locations
     for (const [name, config] of Object.entries(CONFIG.LOCATIONS)) {
       if (name !== 'TREEHOUSE' && !this.locationManager.isLocationRestored(name)) {
         const count = CONFIG.BASE_ZOMBIE_COUNT[name] || 0;
@@ -170,7 +161,6 @@ class Game {
   
   gameLoop() {
     if (!this.isRunning) return;
-    
     requestAnimationFrame(() => this.gameLoop());
     
     if (this.isPaused) {
@@ -178,24 +168,18 @@ class Game {
       return;
     }
     
-    // Calculate delta time
     const now = Date.now();
     this.deltaTime = (now - this.lastFrameTime) / 1000;
     this.lastFrameTime = now;
     
-    // Update game state
     this.update();
-    
-    // Render
     this.renderer.render(this.scene, this.camera);
   }
   
   update() {
-    // Update world
     const elapsedTime = (Date.now() - this.startTime) / 1000;
     this.worldBuilder.updateDayNightCycle(elapsedTime);
     
-    // Update player
     this.player.update(this.deltaTime, this.input, this.gameState);
     this.gameState.player.health = this.player.health;
     this.gameState.player.position = {
@@ -204,16 +188,10 @@ class Game {
       z: this.player.position.z
     };
     
-    // Update camera
     this.cameraController.update(this.player.position, this.player.direction, this.camera);
-    
-    // Update zombies
     this.zombieManager.update(this.deltaTime, this.player, this.gameState);
-    
-    // Combat
     combatSystem.performAttack(this.player, this.zombieManager, this.gameState);
     
-    // Check location completion
     for (const [name, config] of Object.entries(CONFIG.LOCATIONS)) {
       if (name !== 'TREEHOUSE' && !this.locationManager.isLocationRestored(name)) {
         const zombiesInLocation = this.zombieManager.zombies.filter(z => {
@@ -228,22 +206,18 @@ class Game {
       }
     }
     
-    // Update statistics
     this.gameState.statistics.timeAlive = elapsedTime;
     
-    // Check death
     if (this.player.isDead) {
       this.endGame();
       return;
     }
     
-    // Check victory
     if (this.locationManager.isGameComplete()) {
       this.victory();
       return;
     }
     
-    // Update HUD
     uiManager.updateHUD(this.gameState);
   }
   
@@ -279,7 +253,6 @@ class Game {
   }
 }
 
-// Initialize game
 window.addEventListener('DOMContentLoaded', async () => {
   uiManager.initMainMenu();
   window.game = new Game();
