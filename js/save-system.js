@@ -4,34 +4,16 @@ class SaveSystem {
     this.defaultSave = {
       version: CONFIG.GAME_VERSION,
       timestamp: Date.now(),
-      player: {
-        health: CONFIG.PLAYER_START_HEALTH,
-        position: { x: 0, y: 2, z: 0 }
-      },
+      player: { health: CONFIG.PLAYER_START_HEALTH, position: { x: 0, y: 2, z: 0 } },
       locations: {
         TREEHOUSE: { restored: true },
         WALMART: { restored: false, zombiesDefeated: 0, totalZombies: CONFIG.BASE_ZOMBIE_COUNT.WALMART },
         MCDONALDS: { restored: false, zombiesDefeated: 0, totalZombies: CONFIG.BASE_ZOMBIE_COUNT.MCDONALDS },
         NEIGHBORHOOD: { restored: false, zombiesDefeated: 0, totalZombies: CONFIG.BASE_ZOMBIE_COUNT.NEIGHBORHOOD }
       },
-      inventory: {
-        food: 0,
-        medkits: 5,
-        batteries: 0,
-        materials: 0
-      },
-      statistics: {
-        zombiesDefeated: 0,
-        timeAlive: 0,
-        sessionsStarted: 0
-      },
-      settings: {
-        masterVolume: CONFIG.MASTER_VOLUME,
-        musicVolume: CONFIG.MUSIC_VOLUME,
-        effectsVolume: CONFIG.EFFECTS_VOLUME,
-        cameraSensitivity: 1,
-        graphicsQuality: 'high'
-      }
+      inventory: { food: 0, medkits: 5, batteries: 0, materials: 0 },
+      statistics: { zombiesDefeated: 0, timeAlive: 0, sessionsStarted: 0 },
+      settings: { masterVolume: CONFIG.MASTER_VOLUME, musicVolume: CONFIG.MUSIC_VOLUME, effectsVolume: CONFIG.EFFECTS_VOLUME, cameraSensitivity: 1, graphicsQuality: 'high' }
     };
   }
   

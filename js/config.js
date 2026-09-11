@@ -1,10 +1,7 @@
-// ZERMEY Game Configuration
 const CONFIG = {
-  // Game Settings
   GAME_NAME: 'ZERMEY: JACK\'S LAST SAFEHOUSE',
   GAME_VERSION: '1.0.0',
   
-  // Player
   PLAYER_NAME: 'Jack',
   PLAYER_START_HEALTH: 100,
   PLAYER_MAX_HEALTH: 100,
@@ -13,43 +10,21 @@ const CONFIG = {
   PLAYER_PUNCH_RANGE: 2.5,
   PLAYER_PUNCH_DAMAGE: 1,
   PLAYER_PUNCH_COOLDOWN: 0.6,
-  PLAYER_HEALTH_REGEN_RATE: 1, // per second in safe zone
+  PLAYER_HEALTH_REGEN_RATE: 1,
   
-  // Combat
   PUNCH_ANIMATION_DURATION: 0.4,
   ZOMBIE_KNOCK_DISTANCE: 1.5,
   
-  // Zombies
   ZOMBIE_TYPES: {
-    NORMAL: {
-      speed: 4,
-      damage: 5,
-      health: 1,
-      attackRange: 2,
-      attackCooldown: 1.5
-    },
-    FAST: {
-      speed: 8,
-      damage: 3,
-      health: 1,
-      attackRange: 2,
-      attackCooldown: 1.2
-    },
-    STRONG: {
-      speed: 3,
-      damage: 10,
-      health: 3,
-      attackRange: 2.5,
-      attackCooldown: 2
-    }
+    NORMAL: { speed: 4, damage: 5, health: 1, attackRange: 2, attackCooldown: 1.5 },
+    FAST: { speed: 8, damage: 3, health: 1, attackRange: 2, attackCooldown: 1.2 },
+    STRONG: { speed: 3, damage: 10, health: 3, attackRange: 2.5, attackCooldown: 2 }
   },
   
-  // World
   WORLD_SIZE: 500,
   TREEHOUSE_SIZE: 40,
-  DAY_CYCLE_DURATION: 120, // seconds
+  DAY_CYCLE_DURATION: 120,
   
-  // Locations
   LOCATIONS: {
     TREEHOUSE: { x: 0, z: 0, size: 40, type: 'spawn' },
     WALMART: { x: 150, z: 100, size: 60, type: 'location' },
@@ -57,42 +32,28 @@ const CONFIG = {
     NEIGHBORHOOD: { x: -150, z: -100, size: 100, type: 'location' }
   },
   
-  // Difficulty
   BASE_ZOMBIE_COUNT: {
     WALMART: 12,
     MCDONALDS: 8,
     NEIGHBORHOOD: 15
   },
   
-  // UI
-  HUD_UPDATE_INTERVAL: 0.1, // seconds
-  
-  // Audio
+  HUD_UPDATE_INTERVAL: 0.1,
   MASTER_VOLUME: 0.7,
   MUSIC_VOLUME: 0.5,
   EFFECTS_VOLUME: 0.7,
   
-  // Graphics
   FOG_NEAR: 10,
   FOG_FAR: 400,
   SHADOW_MAP_SIZE: 2048,
   
-  // Performance
   MAX_PARTICLES: 100,
-  ZOMBIE_UPDATE_INTERVAL: 0.016, // ~60fps
+  ZOMBIE_UPDATE_INTERVAL: 0.016,
   
-  // Networking
   MULTIPLAYER_ENABLED: true,
   SERVER_URL: 'https://zermey-server.herokuapp.com',
   MAX_PLAYERS: 4,
-  SYNC_INTERVAL: 0.05 // 50ms
+  SYNC_INTERVAL: 0.05
 };
 
-// Debug mode
-const DEBUG = {
-  enabled: false,
-  showGrid: false,
-  showColliders: false,
-  infiniteHealth: false,
-  showStats: true
-};
+const DEBUG = { enabled: false, showGrid: false, showColliders: false, infiniteHealth: false, showStats: true };

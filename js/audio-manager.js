@@ -8,28 +8,18 @@ class AudioManager {
     this.musicTracks = {};
     this.currentMusic = null;
     this.ambientOscillators = [];
-    
     this.initAmbientSounds();
   }
   
   initAmbientSounds() {
-    // Apocalypse ambient drone
-    this.createAmbientDrone();
-  }
-  
-  createAmbientDrone() {
-    // Low frequency apocalypse atmosphere
     const gainNode = this.context.createGain();
     gainNode.gain.value = (this.masterVolume * this.musicVolume) * 0.1;
     gainNode.connect(this.context.destination);
-    
-    // Create subtle low frequency sound
     const osc = this.context.createOscillator();
     osc.frequency.value = 40;
     osc.type = 'sine';
     osc.connect(gainNode);
     osc.start();
-    
     this.ambientOscillators.push(osc);
   }
   
@@ -37,13 +27,10 @@ class AudioManager {
     try {
       const osc = this.context.createOscillator();
       const gain = this.context.createGain();
-      
       osc.connect(gain);
       gain.connect(this.context.destination);
-      
       const effectiveVolume = this.masterVolume * this.effectsVolume * volume;
       gain.gain.value = effectiveVolume * 0.3;
-      
       switch(name) {
         case 'punch':
           osc.frequency.value = 150;
@@ -91,9 +78,6 @@ class AudioManager {
   playMusicTrack(trackName) {
     if (this.currentMusic === trackName) return;
     this.currentMusic = trackName;
-    
-    // Fade out current
-    // Fade in new
     this.playSound('button', 0.1);
   }
   
@@ -104,17 +88,9 @@ class AudioManager {
     if (type === 'effects') this.effectsVolume = value;
   }
   
-  playFootstep() {
-    this.playSound('punch', 0.2);
-  }
-  
-  playSafeZoneSound() {
-    this.playSound('victory', 0.5);
-  }
-  
-  playDeathSound() {
-    this.playSound('death', 0.8);
-  }
+  playFootstep() { this.playSound('punch', 0.2); }
+  playSafeZoneSound() { this.playSound('victory', 0.5); }
+  playDeathSound() { this.playSound('death', 0.8); }
 }
 
 const audioManager = new AudioManager();

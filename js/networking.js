@@ -10,7 +10,6 @@ class NetworkManager {
   }
   
   async initialize() {
-    // Check if networking is available
     if (!this.isNetworkingAvailable()) {
       console.log('Networking not available on this platform');
       return false;
@@ -19,23 +18,16 @@ class NetworkManager {
   }
   
   isNetworkingAvailable() {
-    // Check for WebSocket support
-    return (
-      typeof WebSocket !== 'undefined' &&
-      navigator.onLine &&
-      CONFIG.MULTIPLAYER_ENABLED
-    );
+    return typeof WebSocket !== 'undefined' && navigator.onLine && CONFIG.MULTIPLAYER_ENABLED;
   }
   
   createRoom() {
     if (!this.isNetworkingAvailable()) {
       return { success: false, message: 'Multiplayer unavailable' };
     }
-    
     this.roomCode = this.generateRoomCode();
     this.isHost = true;
     this.connected = true;
-    
     return { success: true, roomCode: this.roomCode };
   }
   
@@ -43,11 +35,9 @@ class NetworkManager {
     if (!this.isNetworkingAvailable()) {
       return { success: false, message: 'Multiplayer unavailable' };
     }
-    
     this.roomCode = code;
     this.isHost = false;
     this.connected = true;
-    
     return { success: true, roomCode: this.roomCode };
   }
   
@@ -66,9 +56,7 @@ class NetworkManager {
   }
   
   broadcastUpdate(type, data) {
-    // Broadcast game state to all players
     const message = { type, data, timestamp: Date.now() };
-    
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(message));
     }
@@ -79,25 +67,6 @@ class NetworkManager {
       this.players[playerId].position = position;
       this.broadcastUpdate('playerMoved', { playerId, position });
     }
-  }
-  
-  updatePlayerHealth(playerId, health) {
-    if (this.players[playerId]) {
-      this.players[playerId].health = health;
-      this.broadcastUpdate('playerDamaged', { playerId, health });
-    }
-  }
-  
-  synchronizeZombie(zombieId, data) {
-    this.broadcastUpdate('zombieSync', { zombieId, data });
-  }
-  
-  reportZombieKilled(zombieId, playerId) {
-    this.broadcastUpdate('zombieKilled', { zombieId, playerId });
-  }
-  
-  reportLocationRestored(location, restoredBy) {
-    this.broadcastUpdate('locationRestored', { location, restoredBy });
   }
   
   disconnect() {
