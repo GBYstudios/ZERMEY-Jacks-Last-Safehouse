@@ -15,7 +15,7 @@ class Game {
     this.lastFrameTime = 0;
     
     this.gameState = {
-      player: { health: CONFIG.PLAYER_START_HEALTH, position: { x: 0, y: 2, z: 0 } },
+    player: { health: CONFIG.PLAYER_START_HEALTH, position: { x: 0, y: 0, z: 0 } },
       locations: {},
       inventory: { food: 0, medkits: 5, batteries: 0, materials: 0 },
       statistics: { zombiesDefeated: 0, timeAlive: 0, sessionsStarted: 0 }
@@ -64,7 +64,7 @@ class Game {
   
   setupScene() {
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x4a5c7d);
+    this.scene.background = new THREE.Color(0x6b8596);
   }
   
   setupCamera() {
@@ -73,10 +73,14 @@ class Game {
   }
   
   setupRenderer() {
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.outputEncoding = THREE.sRGBEncoding;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.05;
     const container = document.getElementById('game-canvas-container');
     if (!container) throw new Error('game-canvas-container not found');
     container.appendChild(this.renderer.domElement);
