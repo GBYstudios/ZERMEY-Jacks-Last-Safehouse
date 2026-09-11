@@ -14,6 +14,10 @@ class Camera {
     this.mouseControlsAttached = false;
   }
 
+  setMouseSensitivity(value) {
+    this.mouseSensitivity = Math.max(0.0005, Math.min(0.01, Number(value)));
+  }
+
   attachMouseControls(element) {
     if (this.mouseControlsAttached || !element) return;
     this.mouseControlsAttached = true;
@@ -38,7 +42,6 @@ class Camera {
   }
 
   update(playerPosition, playerDirection, camera) {
-    // Attach to the game's canvas automatically, so game.js needs no extra setup.
     const canvas = camera?.domElement || document.querySelector('#game-canvas-container canvas, canvas');
     this.attachMouseControls(canvas);
 
@@ -51,7 +54,6 @@ class Camera {
       this.currentDirection.normalize();
     }
 
-    // Add mouse yaw to the player's facing direction.
     const baseAngle = Math.atan2(this.currentDirection.x, -this.currentDirection.z);
     const cameraAngle = baseAngle + this.mouseYaw;
     const viewDirection = new THREE.Vector3(
@@ -60,13 +62,11 @@ class Camera {
       -Math.cos(cameraAngle)
     );
 
-    // Third-person camera stays behind the player and turns smoothly.
     const targetPosition = playerPosition.clone()
       .addScaledVector(viewDirection, -this.distanceBehind);
     targetPosition.y += this.height;
     camera.position.lerp(targetPosition, this.positionSmoothing);
 
-    // Look ahead so the player can see in front of themselves.
     const lookTarget = playerPosition.clone()
       .addScaledVector(viewDirection, this.lookAheadDistance);
     lookTarget.y += 1.5 + this.mousePitch * 5;
