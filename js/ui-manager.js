@@ -42,6 +42,13 @@ class UIManager {
             <input type="range" min="0" max="100" value="70" class="slider" id="masterVolSlider">
           </div>
           <div class="setting-group">
+            <div class="setting-label">
+              <span>Mouse Sensitivity</span>
+              <span class="setting-value" id="mouseSensitivityValue">100%</span>
+            </div>
+            <input type="range" min="25" max="400" value="100" class="slider" id="mouseSensitivitySlider">
+          </div>
+          <div class="setting-group">
             <button class="menu-btn secondary" id="btnBackSettings">BACK</button>
           </div>
         </div>
@@ -112,6 +119,12 @@ class UIManager {
       document.getElementById('masterVolValue').textContent = val + '%';
       audioManager.setVolume('master', val / 100);
     });
+    document.getElementById('mouseSensitivitySlider')?.addEventListener('input', (e) => {
+      const val = Number(e.target.value);
+      document.getElementById('mouseSensitivityValue').textContent = val + '%';
+      const normalizedSensitivity = 0.0005 + ((val - 25) / 375) * 0.0095;
+      window.game?.cameraController?.setMouseSensitivity(normalizedSensitivity);
+    });
     document.getElementById('btnBackSettings')?.addEventListener('click', () => this.closeSettings());
     document.getElementById('btnInventory')?.addEventListener('click', () => this.toggleInventory());
     document.getElementById('btnCloseInventory')?.addEventListener('click', () => this.toggleInventory());
@@ -140,7 +153,7 @@ class UIManager {
   
   openControls() {
     audioManager.playSound('button');
-    alert('CONTROLS\n\nWASD / Arrow Keys - Move\nShift - Run\nSpace - Punch\nESC - Pause Menu\nI - Inventory\nE - Use Item\n\nObjective: Restore all safe zones by clearing every zombie!');
+    alert('CONTROLS\n\nWASD / Arrow Keys - Move\nShift - Run\nSpace - Punch\nESC - Pause Menu\nI - Inventory\nE - Use Item\n\nClick the game to capture the mouse. Move the mouse to rotate the camera. Press ESC to release it.\n\nObjective: Restore all safe zones by clearing every zombie!');
   }
   
   toggleInventory() {
