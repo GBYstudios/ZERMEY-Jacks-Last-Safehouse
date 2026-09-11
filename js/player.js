@@ -105,3 +105,5 @@ class Player {
     return distance < CONFIG.TREEHOUSE_SIZE / 2;
   }
 }
+
+window.Player = Player;
