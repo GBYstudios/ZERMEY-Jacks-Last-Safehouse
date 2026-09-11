@@ -13,7 +13,7 @@ class SaveSystem {
       },
       inventory: { food: 0, medkits: 5, batteries: 0, materials: 0 },
       statistics: { zombiesDefeated: 0, timeAlive: 0, sessionsStarted: 0 },
-      settings: { masterVolume: CONFIG.MASTER_VOLUME, musicVolume: CONFIG.MUSIC_VOLUME, effectsVolume: CONFIG.EFFECTS_VOLUME, cameraSensitivity: 1, graphicsQuality: 'high' }
+      settings: { masterVolume: CONFIG.MASTER_VOLUME, musicVolume: CONFIG.MUSIC_VOLUME, effectsVolume: CONFIG.EFFECTS_VOLUME, cameraSensitivity: 100, graphicsQuality: CONFIG.GRAPHICS_QUALITY.HIGH }
     };
   }
   
@@ -60,6 +60,10 @@ class SaveSystem {
   }
   
   mergeWithDefaults(saved) {
+    const settings = { ...this.defaultSave.settings, ...saved.settings };
+    if (typeof settings.cameraSensitivity === 'number' && settings.cameraSensitivity <= 4) {
+      settings.cameraSensitivity = Math.round(settings.cameraSensitivity * 100);
+    }
     return {
       ...this.defaultSave,
       ...saved,
@@ -67,7 +71,7 @@ class SaveSystem {
       locations: { ...this.defaultSave.locations, ...saved.locations },
       inventory: { ...this.defaultSave.inventory, ...saved.inventory },
       statistics: { ...this.defaultSave.statistics, ...saved.statistics },
-      settings: { ...this.defaultSave.settings, ...saved.settings }
+      settings
     };
   }
   

@@ -46,6 +46,17 @@ const CONFIG = {
   FOG_NEAR: 10,
   FOG_FAR: 400,
   SHADOW_MAP_SIZE: 2048,
+  GRAPHICS_QUALITY: {
+    AUTO: 'auto',
+    LOW: 'low',
+    MEDIUM: 'medium',
+    HIGH: 'high'
+  },
+  GRAPHICS_PRESETS: {
+    low: { pixelRatio: 1, shadowMapSize: 1024, fogNear: 18, fogFar: 240, particleCount: 18, toneMappingExposure: 0.95, useSoftShadows: false },
+    medium: { pixelRatio: 1.25, shadowMapSize: 1536, fogNear: 14, fogFar: 320, particleCount: 36, toneMappingExposure: 1.02, useSoftShadows: false },
+    high: { pixelRatio: 1.5, shadowMapSize: 2048, fogNear: 10, fogFar: 420, particleCount: 60, toneMappingExposure: 1.1, useSoftShadows: true }
+  },
   
   MAX_PARTICLES: 100,
   ZOMBIE_UPDATE_INTERVAL: 0.016,

@@ -390,6 +390,17 @@ canvas {
   box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
 }
 
+.setting-select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 107, 53, 0.35);
+  border-radius: 6px;
+  background: rgba(10, 14, 22, 0.9);
+  color: var(--text);
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
 .inventory-screen {
   position: fixed;
   top: 0;
