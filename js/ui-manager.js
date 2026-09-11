@@ -154,10 +154,12 @@ class UIManager {
     const inventory = window.game.gameState.inventory;
     const grid = document.getElementById('inventoryGrid');
     if (!grid) return;
-    grid.innerHTML = '';\n    for (const [item, count] of Object.entries(inventory)) {
+    grid.innerHTML = '';
+    for (const [item, count] of Object.entries(inventory)) {
       const div = document.createElement('div');
       div.className = 'inventory-item';
-      div.innerHTML = `<div style=\"font-weight:bold\">${item.toUpperCase()}</div><div>×${count}</div>`;\n      grid.appendChild(div);
+      div.innerHTML = `<div style="font-weight:bold">${item.toUpperCase()}</div><div>×${count}</div>`;
+      grid.appendChild(div);
     }
   }
   
@@ -247,3 +249,4 @@ class UIManager {
 }
 
 const uiManager = new UIManager();
+window.uiManager = uiManager;
