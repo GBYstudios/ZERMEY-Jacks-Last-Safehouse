@@ -1,0 +1,29 @@
+Zombie model assets used by the game:
+
+- ./assets/models/zombies/zombie_basic.glb
+- ./assets/models/zombies/zombie_ribcage.glb
+- ./assets/models/zombies/zombie_chubby.glb
+
+Source pack:
+- Quaternius: Zombie Apocalypse Kit
+- Mirror used for this repository import:
+  https://github.com/Papyszoo/CC0-Public-Domain-Models
+- Mirror paths:
+  - packs/quaternius-zombieapocalypsekit/models/zombie_basic/zombie_basic.glb
+  - packs/quaternius-zombieapocalypsekit/models/zombie_ribcage/zombie_ribcage.glb
+  - packs/quaternius-zombieapocalypsekit/models/zombie_chubby/zombie_chubby.glb
+
+License:
+- CC0 1.0 Universal
+- Repository license reference:
+  https://github.com/Papyszoo/CC0-Public-Domain-Models/blob/main/LICENSE
+- Pack metadata reference:
+  https://github.com/Papyszoo/CC0-Public-Domain-Models/blob/main/packs/quaternius-zombieapocalypsekit/pack.json
+
+Original creator:
+- Quaternius
+- https://quaternius.com/packs/zombieapocalypsekit.html
+
+Notes:
+- These files are stored locally so the GitHub Pages build does not depend on an external model URL.
+- Runtime code uses these GLB assets when loading succeeds and falls back to a detailed procedural zombie if loading fails.
