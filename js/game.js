@@ -68,12 +68,7 @@ class Game {
   }
   
   setupCamera() {
-    this.camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
+    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.camera.position.set(0, 5, 10);
   }
   
@@ -82,11 +77,8 @@ class Game {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
-    
     const container = document.getElementById('game-canvas-container');
-    if (!container) {
-      throw new Error('game-canvas-container not found');
-    }
+    if (!container) throw new Error('game-canvas-container not found');
     container.appendChild(this.renderer.domElement);
   }
   
@@ -97,7 +89,7 @@ class Game {
   
   handleKeyDown(e) {
     const key = e.key.toLowerCase();
-    switch(key) {
+    switch (key) {
       case 'w': case 'arrowup': this.input.forward = true; break;
       case 's': case 'arrowdown': this.input.backward = true; break;
       case 'a': case 'arrowleft': this.input.left = true; break;
@@ -112,7 +104,7 @@ class Game {
   
   handleKeyUp(e) {
     const key = e.key.toLowerCase();
-    switch(key) {
+    switch (key) {
       case 'w': case 'arrowup': this.input.forward = false; break;
       case 's': case 'arrowdown': this.input.backward = false; break;
       case 'a': case 'arrowleft': this.input.left = false; break;
@@ -123,20 +115,10 @@ class Game {
   }
   
   togglePause() {
-    if (this.isRunning) {
-      this.isPaused ? this.resume() : this.pause();
-    }
+    if (this.isRunning) this.isPaused ? this.resume() : this.pause();
   }
-  
-  pause() {
-    this.isPaused = true;
-    uiManager.pauseGame();
-  }
-  
-  resume() {
-    this.isPaused = false;
-    uiManager.resumeGame();
-  }
+  pause() { this.isPaused = true; uiManager.pauseGame(); }
+  resume() { this.isPaused = false; uiManager.resumeGame(); }
   
   useItem() {
     const inventory = this.gameState.inventory;
@@ -155,27 +137,22 @@ class Game {
     
     for (const [name] of Object.entries(CONFIG.LOCATIONS)) {
       if (name !== 'TREEHOUSE' && !this.locationManager.isLocationRestored(name)) {
-        const count = CONFIG.BASE_ZOMBIE_COUNT[name] || 0;
-        this.zombieManager.spawnZombies(name, count);
+        this.zombieManager.spawnZombies(name, CONFIG.BASE_ZOMBIE_COUNT[name] || 0);
       }
     }
-    
     this.gameLoop();
   }
   
   gameLoop() {
     if (!this.isRunning) return;
     requestAnimationFrame(() => this.gameLoop());
-    
     if (this.isPaused) {
       this.renderer.render(this.scene, this.camera);
       return;
     }
-    
     const now = Date.now();
     this.deltaTime = Math.min((now - this.lastFrameTime) / 1000, 0.1);
     this.lastFrameTime = now;
-    
     this.update();
     this.renderer.render(this.scene, this.camera);
   }
@@ -183,15 +160,9 @@ class Game {
   update() {
     const elapsedTime = (Date.now() - this.startTime) / 1000;
     this.worldBuilder.updateDayNightCycle(elapsedTime);
-    
     this.player.update(this.deltaTime, this.input, this.gameState);
     this.gameState.player.health = this.player.health;
-    this.gameState.player.position = {
-      x: this.player.position.x,
-      y: this.player.position.y,
-      z: this.player.position.z
-    };
-    
+    this.gameState.player.position = { x: this.player.position.x, y: this.player.position.y, z: this.player.position.z };
     this.cameraController.update(this.player.position, this.player.direction, this.camera);
     this.zombieManager.update(this.deltaTime, this.player, this.gameState);
     combatSystem.performAttack(this.player, this.zombieManager, this.gameState);
@@ -202,52 +173,26 @@ class Game {
           const dist = z.position.distanceTo(new THREE.Vector3(config.x, 0, config.z));
           return !z.isDead && dist < config.size;
         }).length;
-        
-        if (zombiesInLocation === 0) {
-          this.locationManager.restoreLocation(name, this.zombieManager);
-          console.log(`${name} restored!`);
-        }
+        if (zombiesInLocation === 0) this.locationManager.restoreLocation(name, this.zombieManager);
       }
     }
     
     this.gameState.statistics.timeAlive = elapsedTime;
-    
-    if (this.player.isDead) {
-      this.endGame();
-      return;
-    }
-    
-    if (this.locationManager.isGameComplete()) {
-      this.victory();
-      return;
-    }
-    
+    if (this.player.isDead) return this.endGame();
+    if (this.locationManager.isGameComplete()) return this.victory();
     uiManager.updateHUD(this.gameState);
   }
   
   endGame() {
     this.isRunning = false;
     saveSystem.save(this.gameState);
-    
-    const stats = {
-      survivalTime: this.gameState.statistics.timeAlive,
-      zombiesDefeated: this.gameState.statistics.zombiesDefeated,
-      locationsRestored: this.locationManager.getRestoredCount()
-    };
-    
-    uiManager.showDeathScreen(stats);
+    uiManager.showDeathScreen({ survivalTime: this.gameState.statistics.timeAlive, zombiesDefeated: this.gameState.statistics.zombiesDefeated, locationsRestored: this.locationManager.getRestoredCount() });
   }
   
   victory() {
     this.isRunning = false;
     saveSystem.save(this.gameState);
-    
-    const stats = {
-      survivalTime: this.gameState.statistics.timeAlive,
-      zombiesDefeated: this.gameState.statistics.zombiesDefeated
-    };
-    
-    uiManager.showVictoryScreen(stats);
+    uiManager.showVictoryScreen({ survivalTime: this.gameState.statistics.timeAlive, zombiesDefeated: this.gameState.statistics.zombiesDefeated });
   }
   
   onWindowResize() {
@@ -256,3 +201,5 @@ class Game {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 }
+
+window.Game = Game;
