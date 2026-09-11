@@ -4,24 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZERMEY: JACK'S LAST SAFEHOUSE</title>
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="./styles/main.css">
 </head>
 <body>
     <div id="game-container"></div>
+    
+    <!-- Three.js and Physics Engine from CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js"></script>
-    <script src="js/config.js"></script>
-    <script src="js/audio-manager.js"></script>
-    <script src="js/save-system.js"></script>
-    <script src="js/networking.js"></script>
-    <script src="js/ui-manager.js"></script>
-    <script src="js/world-builder.js"></script>
-    <script src="js/player.js"></script>
-    <script src="js/zombie.js"></script>
-    <script src="js/combat-system.js"></script>
-    <script src="js/inventory.js"></script>
-    <script src="js/location-manager.js"></script>
-    <script src="js/camera.js"></script>
-    <script src="js/game.js"></script>
+    
+    <!-- Game Scripts -->
+    <script src="./js/config.js"></script>
+    <script src="./js/audio-manager.js"></script>
+    <script src="./js/save-system.js"></script>
+    <script src="./js/networking.js"></script>
+    <script src="./js/ui-manager.js"></script>
+    <script src="./js/world-builder.js"></script>
+    <script src="./js/player.js"></script>
+    <script src="./js/zombie.js"></script>
+    <script src="./js/combat-system.js"></script>
+    <script src="./js/inventory.js"></script>
+    <script src="./js/location-manager.js"></script>
+    <script src="./js/camera.js"></script>
+    <script src="./js/game.js"></script>
+    
+    <script>
+        // Error handling
+        window.addEventListener('error', (e) => {
+            console.error('Game Error:', e.error);
+            alert('Game Error: ' + e.error.message + '\n\nCheck console for details.');
+        });
+        console.log('ZERMEY: JACK\'S LAST SAFEHOUSE loading...');
+    </script>
 </body>
 </html>
