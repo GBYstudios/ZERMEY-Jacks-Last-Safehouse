@@ -41,26 +41,29 @@ class Camera {
     });
   }
 
+  getViewDirection() {
+    return new THREE.Vector3(
+      Math.sin(this.mouseYaw),
+      0,
+      -Math.cos(this.mouseYaw)
+    ).normalize();
+  }
+
+  getMovementBasis() {
+    const forward = this.currentDirection.clone();
+    if (forward.lengthSq() === 0) forward.set(0, 0, -1);
+    forward.normalize();
+    const right = new THREE.Vector3(-forward.z, 0, forward.x).normalize();
+    return { forward, right };
+  }
+
   update(playerPosition, playerDirection, camera) {
     const canvas = camera?.domElement || document.querySelector('#game-canvas-container canvas, canvas');
     this.attachMouseControls(canvas);
-
-    const direction = playerDirection.clone();
-    direction.y = 0;
-
-    if (direction.lengthSq() > 0) {
-      direction.normalize();
-      this.currentDirection.lerp(direction, this.rotationSmoothing);
-      this.currentDirection.normalize();
-    }
-
-    const baseAngle = Math.atan2(this.currentDirection.x, -this.currentDirection.z);
-    const cameraAngle = baseAngle + this.mouseYaw;
-    const viewDirection = new THREE.Vector3(
-      Math.sin(cameraAngle),
-      0,
-      -Math.cos(cameraAngle)
-    );
+    const desiredDirection = this.getViewDirection();
+    this.currentDirection.lerp(desiredDirection, this.rotationSmoothing);
+    this.currentDirection.normalize();
+    const viewDirection = this.currentDirection.clone();
 
     const targetPosition = playerPosition.clone()
       .addScaledVector(viewDirection, -this.distanceBehind);

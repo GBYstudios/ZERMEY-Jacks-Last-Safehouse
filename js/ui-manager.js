@@ -49,6 +49,18 @@ class UIManager {
             <input type="range" min="25" max="400" value="100" class="slider" id="mouseSensitivitySlider">
           </div>
           <div class="setting-group">
+            <div class="setting-label">
+              <span>Graphics Quality</span>
+              <span class="setting-value" id="graphicsQualityValue">HIGH</span>
+            </div>
+            <select class="setting-select" id="graphicsQualitySelect">
+              <option value="auto">AUTO</option>
+              <option value="low">LOW</option>
+              <option value="medium">MEDIUM</option>
+              <option value="high">HIGH</option>
+            </select>
+          </div>
+          <div class="setting-group">
             <button class="menu-btn secondary" id="btnBackSettings">BACK</button>
           </div>
         </div>
@@ -118,12 +130,19 @@ class UIManager {
       const val = e.target.value;
       document.getElementById('masterVolValue').textContent = val + '%';
       audioManager.setVolume('master', val / 100);
+      if (window.game?.gameState?.settings) window.game.gameState.settings.masterVolume = val / 100;
     });
     document.getElementById('mouseSensitivitySlider')?.addEventListener('input', (e) => {
       const val = Number(e.target.value);
       document.getElementById('mouseSensitivityValue').textContent = val + '%';
       const normalizedSensitivity = 0.0005 + ((val - 25) / 375) * 0.0095;
       window.game?.cameraController?.setMouseSensitivity(normalizedSensitivity);
+      if (window.game?.gameState?.settings) window.game.gameState.settings.cameraSensitivity = val;
+    });
+    document.getElementById('graphicsQualitySelect')?.addEventListener('change', (e) => {
+      const value = e.target.value;
+      document.getElementById('graphicsQualityValue').textContent = value.toUpperCase();
+      window.game?.applyGraphicsQuality(value);
     });
     document.getElementById('btnBackSettings')?.addEventListener('click', () => this.closeSettings());
     document.getElementById('btnInventory')?.addEventListener('click', () => this.toggleInventory());
@@ -143,6 +162,7 @@ class UIManager {
   
   openSettings() {
     audioManager.playSound('button');
+    this.syncSettings(window.game?.gameState?.settings);
     document.getElementById('settingsScreen').classList.add('active');
   }
   
@@ -252,6 +272,28 @@ class UIManager {
     const healthPercent = Math.max(0, Math.min(100, (health / maxHealth) * 100));
     healthBarFill.style.width = healthPercent + '%';
     healthText.textContent = `❤️ ${Math.ceil(health)}/${maxHealth}`;
+  }
+
+  syncSettings(settings = {}) {
+    const masterVolume = Math.round((settings.masterVolume ?? CONFIG.MASTER_VOLUME) * 100);
+    const cameraSensitivity = settings.cameraSensitivity <= 4 ? Math.round(settings.cameraSensitivity * 100) : (settings.cameraSensitivity ?? 100);
+    const graphicsQuality = settings.graphicsQuality || CONFIG.GRAPHICS_QUALITY.HIGH;
+
+    const masterSlider = document.getElementById('masterVolSlider');
+    const mouseSlider = document.getElementById('mouseSensitivitySlider');
+    const qualitySelect = document.getElementById('graphicsQualitySelect');
+
+    if (masterSlider) masterSlider.value = masterVolume;
+    if (mouseSlider) mouseSlider.value = cameraSensitivity;
+    if (qualitySelect) qualitySelect.value = graphicsQuality;
+
+    const masterLabel = document.getElementById('masterVolValue');
+    const sensitivityLabel = document.getElementById('mouseSensitivityValue');
+    const qualityLabel = document.getElementById('graphicsQualityValue');
+
+    if (masterLabel) masterLabel.textContent = masterVolume + '%';
+    if (sensitivityLabel) sensitivityLabel.textContent = cameraSensitivity + '%';
+    if (qualityLabel) qualityLabel.textContent = graphicsQuality.toUpperCase();
   }
   
   formatTime(seconds) {

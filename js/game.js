@@ -13,6 +13,8 @@ class Game {
     this.startTime = 0;
     this.deltaTime = 0;
     this.lastFrameTime = 0;
+    this.graphicsPreset = CONFIG.GRAPHICS_PRESETS.high;
+    this.resolvedGraphicsQuality = CONFIG.GRAPHICS_QUALITY.HIGH;
     
     this.gameState = {
       player: { health: CONFIG.PLAYER_START_HEALTH, position: { x: 0, y: 2, z: 0 } },
@@ -38,8 +40,11 @@ class Game {
     this.setupScene();
     this.setupCamera();
     this.setupRenderer();
+    this.cameraController = new Camera();
+    this.applySavedSettings();
     
     this.worldBuilder = new WorldBuilder(this.scene);
+    this.worldBuilder.setQuality(this.graphicsPreset, this.resolvedGraphicsQuality);
     this.worldBuilder.build();
     
     this.player = new Player(this.scene);
@@ -47,7 +52,6 @@ class Game {
     
     this.zombieManager = new ZombieManager(this.scene);
     this.locationManager = new LocationManager(this.scene);
-    this.cameraController = new Camera();
     
     for (const [name, data] of Object.entries(this.gameState.locations)) {
       if (data.restored && name !== 'TREEHOUSE') {
@@ -56,6 +60,7 @@ class Game {
     }
     
     this.setupInput();
+    uiManager.syncSettings(this.gameState.settings);
     window.addEventListener('resize', () => this.onWindowResize());
     
     this.startTime = Date.now();
@@ -64,7 +69,7 @@ class Game {
   
   setupScene() {
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x4a5c7d);
+    this.scene.background = new THREE.Color(0x5b7390);
   }
   
   setupCamera() {
@@ -73,13 +78,68 @@ class Game {
   }
   
   setupRenderer() {
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
+    this.renderer.outputEncoding = THREE.sRGBEncoding;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1;
+    if ('physicallyCorrectLights' in this.renderer) {
+      this.renderer.physicallyCorrectLights = true;
+    }
     const container = document.getElementById('game-canvas-container');
     if (!container) throw new Error('game-canvas-container not found');
     container.appendChild(this.renderer.domElement);
+  }
+
+  applySavedSettings() {
+    const settings = this.gameState.settings || {};
+    this.gameState.settings = { ...saveSystem.defaultSave.settings, ...settings };
+    audioManager.setVolume('master', this.gameState.settings.masterVolume);
+    audioManager.setVolume('music', this.gameState.settings.musicVolume);
+    audioManager.setVolume('effects', this.gameState.settings.effectsVolume);
+    this.cameraController.setMouseSensitivity(this.mapSensitivityPercentToValue(this.getSavedSensitivityPercent()));
+    this.applyGraphicsQuality(this.gameState.settings.graphicsQuality || CONFIG.GRAPHICS_QUALITY.HIGH);
+  }
+
+  getSavedSensitivityPercent() {
+    const value = Number(this.gameState.settings?.cameraSensitivity);
+    if (!Number.isFinite(value)) return 100;
+    return value <= 4 ? Math.round(value * 100) : Math.max(25, Math.min(400, value));
+  }
+
+  mapSensitivityPercentToValue(percent) {
+    const normalizedPercent = Math.max(25, Math.min(400, Number(percent) || 100));
+    return 0.0005 + ((normalizedPercent - 25) / 375) * 0.0095;
+  }
+
+  resolveGraphicsQuality(quality) {
+    if (quality && quality !== CONFIG.GRAPHICS_QUALITY.AUTO) return quality;
+    const cores = navigator.hardwareConcurrency || 4;
+    const memory = navigator.deviceMemory || 4;
+    const smallScreen = Math.min(window.innerWidth, window.innerHeight) < 900;
+    if (cores <= 4 || memory <= 4) return CONFIG.GRAPHICS_QUALITY.LOW;
+    if (cores <= 8 || smallScreen) return CONFIG.GRAPHICS_QUALITY.MEDIUM;
+    return CONFIG.GRAPHICS_QUALITY.HIGH;
+  }
+
+  applyGraphicsQuality(quality) {
+    this.gameState.settings.graphicsQuality = quality;
+    this.resolvedGraphicsQuality = this.resolveGraphicsQuality(quality);
+    this.graphicsPreset = CONFIG.GRAPHICS_PRESETS[this.resolvedGraphicsQuality] || CONFIG.GRAPHICS_PRESETS.high;
+
+    if (this.renderer) {
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, this.graphicsPreset.pixelRatio));
+      this.renderer.shadowMap.type = this.graphicsPreset.useSoftShadows && THREE.PCFSoftShadowMap ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap;
+      this.renderer.toneMappingExposure = this.graphicsPreset.toneMappingExposure;
+    }
+
+    if (this.worldBuilder) {
+      this.worldBuilder.applyGraphicsSettings(this.graphicsPreset, this.resolvedGraphicsQuality);
+    }
+
+    return this.resolvedGraphicsQuality;
   }
   
   setupInput() {
@@ -160,7 +220,8 @@ class Game {
   update() {
     const elapsedTime = (Date.now() - this.startTime) / 1000;
     this.worldBuilder.updateDayNightCycle(elapsedTime);
-    this.player.update(this.deltaTime, this.input, this.gameState);
+    const movementBasis = this.cameraController.getMovementBasis();
+    this.player.update(this.deltaTime, this.input, this.gameState, movementBasis);
     this.gameState.player.health = this.player.health;
     this.gameState.player.position = { x: this.player.position.x, y: this.player.position.y, z: this.player.position.z };
     this.cameraController.update(this.player.position, this.player.direction, this.camera);
@@ -199,6 +260,7 @@ class Game {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.applyGraphicsQuality(this.gameState.settings.graphicsQuality || CONFIG.GRAPHICS_QUALITY.HIGH);
   }
 }
 
