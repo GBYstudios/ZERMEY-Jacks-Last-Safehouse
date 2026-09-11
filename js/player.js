@@ -16,7 +16,7 @@ class Player {
   
   createModel() {
     const group = new THREE.Group();
-    const bodyGeometry = new THREE.CapsuleGeometry(0.4, 1.2, 4, 8);
+    const bodyGeometry = new THREE.CylinderGeometry(0.4, 0.4, 1.2, 12);
     const bodyMaterial = new THREE.MeshLambertMaterial({ color: 0xff6b35 });
     const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
     body.position.y = 0.6;
