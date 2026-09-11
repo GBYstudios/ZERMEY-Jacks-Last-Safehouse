@@ -81,12 +81,11 @@ class Game {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFShadowShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     
     const container = document.getElementById('game-canvas-container');
     if (!container) {
-      console.error('game-canvas-container not found!');
-      return;
+      throw new Error('game-canvas-container not found');
     }
     container.appendChild(this.renderer.domElement);
   }
@@ -149,11 +148,12 @@ class Game {
   }
   
   start() {
+    if (this.isRunning) return;
     this.isRunning = true;
     this.isPaused = false;
     this.gameState.statistics.sessionsStarted++;
     
-    for (const [name, config] of Object.entries(CONFIG.LOCATIONS)) {
+    for (const [name] of Object.entries(CONFIG.LOCATIONS)) {
       if (name !== 'TREEHOUSE' && !this.locationManager.isLocationRestored(name)) {
         const count = CONFIG.BASE_ZOMBIE_COUNT[name] || 0;
         this.zombieManager.spawnZombies(name, count);
@@ -173,7 +173,7 @@ class Game {
     }
     
     const now = Date.now();
-    this.deltaTime = (now - this.lastFrameTime) / 1000;
+    this.deltaTime = Math.min((now - this.lastFrameTime) / 1000, 0.1);
     this.lastFrameTime = now;
     
     this.update();
@@ -256,9 +256,3 @@ class Game {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 }
-
-window.addEventListener('DOMContentLoaded', async () => {
-  uiManager.initMainMenu();
-  window.game = new Game();
-  await window.game.initialize();
-});
