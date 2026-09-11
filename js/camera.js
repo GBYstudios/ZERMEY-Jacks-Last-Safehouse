@@ -1,19 +1,29 @@
 class Camera {
   constructor() {
-    this.offset = new THREE.Vector3(0, 3, 5);
-    this.smoothing = 0.1;
+    this.height = 2.4;
+    this.lookAheadDistance = 12;
+    this.smoothing = 0.15;
   }
-  
+
   update(playerPosition, playerDirection, camera) {
-    const targetPosition = new THREE.Vector3();
-    targetPosition.copy(playerPosition);
-    targetPosition.y += this.offset.y;
-    
-    const sideways = new THREE.Vector3(-playerDirection.z, 0, playerDirection.x);
-    targetPosition.addScaledVector(playerDirection, this.offset.z);
-    targetPosition.addScaledVector(sideways, 0);
-    
+    const direction = playerDirection.clone();
+    direction.y = 0;
+
+    if (direction.lengthSq() === 0) {
+      direction.set(0, 0, -1);
+    } else {
+      direction.normalize();
+    }
+
+    // Place the camera at the player's eye level and aim it in the
+    // direction the player is moving, instead of looking back at the player.
+    const targetPosition = playerPosition.clone();
+    targetPosition.y += this.height;
     camera.position.lerp(targetPosition, this.smoothing);
-    camera.lookAt(playerPosition.x, playerPosition.y + 1, playerPosition.z);
+
+    const lookTarget = targetPosition.clone().addScaledVector(direction, this.lookAheadDistance);
+    camera.lookAt(lookTarget);
   }
 }
+
+window.Camera = Camera;
