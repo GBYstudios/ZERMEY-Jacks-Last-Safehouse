@@ -98,6 +98,7 @@ class Game {
       case ' ': e.preventDefault(); this.input.punch = true; break;
       case 'escape': this.togglePause(); break;
       case 'i': uiManager.toggleInventory(); break;
+      case 'c': if (window.worldClock) window.worldClock.toggle(); break;
       case 'e': this.useItem(); break;
     }
   }

@@ -474,3 +474,31 @@ canvas {
     opacity: 0.7;
   }
 }
+
+/* World clock */
+#world-clock {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 50;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  color: #e8e8e8;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  pointer-events: none;
+}
+#world-clock.hidden { display: none; }
+#world-clock .world-clock-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  line-height: 1.5;
+}
+#world-clock .world-clock-local { color: #7dffa0; font-weight: bold; }
+#world-clock .world-clock-time { font-variant-numeric: tabular-nums; }
+@media (max-width: 600px) {
+  #world-clock { font-size: 10px; padding: 4px 6px; }
+}

@@ -41,6 +41,7 @@ A complete third-person survival game where you control Jack, a kid surviving a 
 | **I** | Inventory |
 | **M** | Map |
 | **E** | Use Item |
+| **C** | Toggle World Clock (local, UTC, New York, London, Tokyo, Sydney) |
 
 ## 🚀 How to Play
 
